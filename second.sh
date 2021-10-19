@@ -16,14 +16,24 @@ check_memory() {
 
 if [ $command == "START" ]
 then
-    check_memory &
-    echo $!
-    echo $! > $pid_file
+    if [ -f $pid_file ]
+    then
+	echo "The program is already running"
+    else
+    	check_memory &
+    	echo $!
+    	echo $! > $pid_file
+   fi
 elif [ $command == "STOP" ]
 then
-    read pid < $pid_file
-    kill $pid
-    rm $pid_file
+    if [ -f $pid_file ]
+    then
+    	read pid < $pid_file
+    	kill $pid
+    	rm $pid_file
+    else
+	echo "The program is already stopped"
+    fi
 elif [ $command == "STATUS" ]
 then
     if [ -f $pid_file ]
