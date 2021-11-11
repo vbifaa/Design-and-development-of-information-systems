@@ -1,0 +1,49 @@
+---
+
+- name: First
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Check app exist
+      stat:
+        path: /home/mftiedu/vbifaa_app
+      register: app_details
+
+    - name: Copy App
+      copy:
+        src: ./vbifaa_app
+        dest: /home/mftiedu/vbifaa_app
+      when: not app_details.stat.exists
+
+    - name: Check for Python
+      raw: test -e /usr/bin/python
+      changed_when: false
+      failed_when: false
+      register: check_python
+
+    - name: Install Python CentOS
+      raw: yum -y install python3
+      when: ansible_os_family == "RedHat" and check_python.rc != 0
+
+    - name: Install Python Debian
+      raw: apt -y install python3
+      when: ansible_os_family == "Debian" and check_python.rc != 0
+
+    - name: Check venv exists
+      stat:
+        path: /home/mftiedu/vbifaa_app/venv
+      register: venv_details
+
+    - name: Install venv
+      shell: python3 -m venv venv
+      args:
+        chdir: /home/mftiedu/vbifaa_app
+      when: not venv_details.stat.exists
+
+    - name: Install requirements ans start app
+      shell: . venv/bin/activate && pip install -r vbifaa_app/requirements.txt && python manage.py runserver
+      args:
+        chdir: /home/mftiedu/vbifaa_app
+
+...
