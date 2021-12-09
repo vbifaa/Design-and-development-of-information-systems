@@ -1,5 +1,5 @@
-ansible_host: 194.87.107.68
-ansible_ssh_user: mftiedu
+ansible_host: "194.87.107.68"
+ansible_ssh_user: "mftiedu"
 ansible_ssh_pass: !vault | 
 	$ANSIBLE_VAULT;1.1;AES256
 	64303030303565303163646432616232376532623366303061663663666332333265393966306266
