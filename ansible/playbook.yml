@@ -1,0 +1,9 @@
+- name: Deploy App
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Copy JAR file on server
+      copy:
+        src: ../target/jenkins_sonar-1.0-SNAPSHOT.jar
+        dest: application.jar
